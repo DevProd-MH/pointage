@@ -4,11 +4,14 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
 
@@ -18,17 +21,33 @@ public class MainController implements Initializable {
     @FXML
     DatePicker dt, dtrp;
     @FXML
-    CheckBox al1, al2, mo;
+    CheckBox al1, al2, mo, tod;
     @FXML
     TextField nm, prnm, ntel, addr, ser, cp, em;
     @FXML
     TextArea t1, t2;
     @FXML
     TableView tv;
+    @FXML
+    AnchorPane pn;
+    @FXML
+    Button prsnt, absnt;
+    @FXML
+    Label lb, lb1;
     private final AccessUtils accessUtils = new AccessUtils();
+    private boolean editing = false;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        pn.setOnKeyPressed(ke -> {
+            switch (ke.getCode()) {
+                case P:
+                    prsnt.fire();
+                    break;
+                case A:
+                    absnt.fire();
+            }
+        });
         System.out.println(accessUtils.connect());
         updateBoxes();
         updateOther(dpt, "dpt");
@@ -73,9 +92,9 @@ public class MainController implements Initializable {
             if (line.contains(value)) {
                 tf.setText(tf.getText().replace(line, ""));
             }
-            if (line.isEmpty()) tf.setText(tf.getText().replace(line.replaceAll("[\\\\\\r\\\\\\n]+", ""), ""));
+            if (line.isEmpty()) tf.setText(tf.getText().replace(line.replaceAll("[\\\\\\r\\n]+", ""), ""));
         }
-        tf.setText(tf.getText().replaceAll("[\\\\\\r\\\\\\n]+", "\n"));
+        tf.setText(tf.getText().replaceAll("[\\\\\\r\\n]+", "\n"));
     }
 
     @FXML
@@ -99,10 +118,21 @@ public class MainController implements Initializable {
 
     @FXML
     private void addEns() {
-        String values = cb.getItems().size() + ",'" + nm.getText() + "','" + prnm.getText() + "','" + addr.getText() + "','" + cp.getText() + "','" + em.getText() + "'," + ntel.getText() + ",'" + grd.getValue() + "','" + dpt.getValue() + "','" + mdl.getValue() + "'";
-        accessUtils.executeQuery("INSERT INTO ensignant (ID,nom,prenom,Adresse,CodePostal,email,tel,grade,dpt,module) values (" + values + ")");
-        updateBoxes();
-        setText(mdl, grd);
+        try {
+            ResultSet rs = accessUtils.executeQuery("SELECT id FROM ensignant ORDER BY id DESC LIMIT 1");
+            int id = 0;
+            if (rs.next()) id = rs.getInt("id") + 1;
+            String values = id + ",'" + nm.getText() + "','" + prnm.getText() + "','" + addr.getText() + "','" + cp.getText() + "','" + em.getText() + "'," + ntel.getText() + ",'" + grd.getValue() + "','" + dpt.getValue() + "','" + mdl.getValue() + "'";
+            String sql = "INSERT INTO ensignant (ID,nom,prenom,Adresse,CodePostal,email,tel,grade,dpt,module) values (" + values + ")";
+            if (editing) {
+                sql = "UPDATE ensignant set nom = '" + nm.getText() + "' , prenom = '" + prnm.getText() + "' , Adresse = '" + addr.getText() + "' , CodePostal = '" + cp.getText() + "' , email = '" + em.getText() + "' , tel = " + ntel.getText() + " , grade = '" + grd.getValue() + "' , dpt = '" + dpt.getValue() + "' , module = '" + mdl.getValue() + "' where id = " + lb1.getText().replace("id = ", "");
+            }
+            accessUtils.executeQuery(sql);
+            updateBoxes();
+            reset1();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @FXML
@@ -118,15 +148,18 @@ public class MainController implements Initializable {
         ResultSet rs = accessUtils.executeQuery("SELECT * FROM ensignant WHERE id = " + n[0] + " and nom = '" + n[1] + "' and prenom = '" + n[2] + "'");
         try {
             if (rs.next()) {
+                lb1.setText("id = " + rs.getInt("id"));
                 nm.setText(rs.getString("nom"));
                 prnm.setText(rs.getString("prenom"));
                 ntel.setText(rs.getInt("tel") + "");
                 addr.setText(rs.getString("Adresse"));
                 cp.setText(rs.getString("CodePostal"));
+                em.setText(rs.getString("email"));
                 grd.setValue(rs.getString("grade"));
                 mdl.setValue(rs.getString("module"));
                 dpt.setValue(rs.getString("dpt"));
             }
+            editing = true;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -135,7 +168,12 @@ public class MainController implements Initializable {
     @FXML
     private void search() {
         try {
-            ResultSet rs = accessUtils.executeQuery("select id,nom,prenom from ensignant where nom = '%" + ser.getText() + "%'");
+            String sql = "select id,nom,prenom from ensignant where nom LIKE '%" + ser.getText() + "%'";
+            if (ser.getText().isEmpty()) {
+                updateBoxes();
+                return;
+            }
+            ResultSet rs = accessUtils.executeQuery(sql);
             cb2.getItems().remove(0, cb2.getItems().size());
             while (rs.next()) {
                 cb2.getItems().add(rs.getInt("id") + "_" + rs.getString("nom") + "_" + rs.getString("prenom"));
@@ -147,23 +185,41 @@ public class MainController implements Initializable {
 
     @FXML
     private void show() {
+        boolean s = false, m = false;
         try {
-            String date = "date_pres = '" + dtrp.getValue().toString();
+            String Ndate = "", date = "date_pres = '" + dtrp.getValue().toString();
+            String[] id = new String[3];
             if (mo.isSelected()) {
-                String Ndate = date.substring(0, date.length() - 2).replace("date_pres = '", "");
+                Ndate = date.substring(0, date.length() - 2).replace("date_pres = '", "");
                 date = "date_pres between '" + Ndate + "01' AND '" + Ndate + ("00" + EndDay(dtrp)).substring(EndDay(dtrp).length());
+                m = true;
             }
             String sql;
-            if (al2.isSelected())
-                sql = "SELECT id,nom,prenom,presence FROM ensignant,pointage where ensignant.id = pointage.id_ens and " + date + "'";
-            else {
-                String[] id = cb1.getValue().split("_");
-                sql = "SELECT id,nom,prenom,presence FROM ensignant,pointage where ensignant.id = pointage.id_ens and ensignant.id = " + id[0] + " and " + date + "'";
+            if (al2.isSelected()) {
+                sql = "SELECT id,nom,prenom,date_pres,presence FROM ensignant,pointage where ensignant.id = pointage.id_ens and " + date + "'";
+            } else {
+                id = cb1.getValue().split("_");
+                sql = "SELECT id,nom,prenom,date_pres,presence FROM ensignant,pointage where ensignant.id = pointage.id_ens and ensignant.id = " + id[0] + " and " + date + "'";
+                s = true;
             }
             accessUtils.populateData(tv, sql);
+            if (s && m) {
+                ResultSet rs = accessUtils.executeQuery("SELECT count(presence) FROM ensignant,pointage where ensignant.id = pointage.id_ens and ensignant.id = " + id[0] + " and presence = 'P' and " + date + "'");
+                if (rs.next()) {
+                    lb.setText("Presenter : " + rs.getInt(1) + " fois dans " + Ndate.substring(0, Ndate.length() - 1));
+                }
+            }
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @FXML
+    private void today() {
+        if (!tod.isSelected()) return;
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDateTime now = LocalDateTime.now();
+        dt.setValue(LocalDate.parse(dtf.format(now)));
     }
 
     @FXML
@@ -175,6 +231,10 @@ public class MainController implements Initializable {
     @FXML
     private void reset1() {
         setText(grd, mdl);
+        editing = false;
+        lb1.setText("");
+        ser.setText("");
+        updateBoxes();
     }
 
     private void setText(ComboBox<String> grd, ComboBox<String> mdl) {
@@ -191,7 +251,20 @@ public class MainController implements Initializable {
 
     @FXML
     private void auto() {
+        filter(t1, t2);
+        filter(t2, t1);
+    }
 
+    private void filter(TextArea t2, TextArea t1) {
+        if (t2.getText().isEmpty() && !t1.getText().isEmpty()) {
+            for (String value : cb.getItems()) {
+                for (String line : t1.getText().split("\n")) {
+                    if (!line.equals(value) && !line.isEmpty()) {
+                        if (!t2.getText().contains(value) && !t1.getText().contains(value)) t2.appendText(value + "\n");
+                    }
+                }
+            }
+        }
     }
 
     private void updateBoxes() {
@@ -231,8 +304,4 @@ public class MainController implements Initializable {
         return m % 2 == 0 ? "30" : "31";
     }
 
-    private String flipDate(String date) {
-        String[] dt = date.split("-");
-        return dt[2] + "/" + dt[1] + "/" + dt[0];
-    }
 }

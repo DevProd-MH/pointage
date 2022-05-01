@@ -1,6 +1,7 @@
 package com.pointage.pointage;
 
 import com.healthmarketscience.jackcess.Database;
+import com.healthmarketscience.jackcess.DatabaseBuilder;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -17,8 +18,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
-import com.healthmarketscience.jackcess.DatabaseBuilder;
 
 @SuppressWarnings("all")
 public class AccessUtils {
