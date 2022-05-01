@@ -9,23 +9,42 @@
 }
 
 .text-field {
-    -fx-background-color: transparent;
-    -fx-background-radius: 16;
-    -fx-border-color: white;
-    -fx-border-radius: 16px;
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+    -fx-background-insets: 0, 1, 2;
     -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+    -fx-border-color: rgba(255, 255, 255, 0.12);
 }
 
 .text-field:focused {
-    -fx-background-color: #a9a9a9;
+    -fx-background-color: linear-gradient(to bottom, rgba(155, 153, 153, 0.24), rgba(29, 28, 28, 0.514));
     -fx-background-insets: 0 -1 -1 -1, 0 0 0 0, 0 -1 3 -1;
 }
 
-.combo-box {
+.text-area {
     -fx-background-color: transparent;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 10, 0, 5.0, 5.0);
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+.text-area:focused .content {
+    -fx-background-color: transparent;
+    -fx-background-insets: 0;
+    -fx-background-radius: 0;
+}
+
+
+.combo-box {
+    -fx-cursor: hand;
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
     -fx-border-style: solid;
     -fx-border-width: 1;
-    -fx-border-color: white;
+    -fx-border-color: rgba(255, 255, 255, 0.12);
 }
 
 .combo-box .arrow {
@@ -48,121 +67,179 @@
 
 .combo-box .combo-box-popup .list-view,
 .combo-box .combo-box-popup .list-cell {
-    -fx-background-color: #5898f8;
+    -fx-background-color: #494848;
     -fx-text-fill: white;
 }
 
 .combo-box .combo-box-popup .list-cell:hover {
-    -fx-text-fill: rgb(51, 0, 170);
-    -fx-background-color: rgb(14, 177, 206);
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-background-color: rgb(28, 32, 32);
 }
 
-.choice-box {
-    -fx-background-color: transparent;
-    -fx-border-style: solid;
-    -fx-border-width: 1;
-    -fx-border-color: white;
+
+.date-picker .arrow-button {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+    -fx-background-radius: 0;
 }
 
-.choice-box .context-menu {
-    -fx-background-color: #5898f8;
-    -fx-text-fill: white;
+.date-picker .arrow-button:hover {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
 }
 
-.choice-box .menu-item:hover {
-    -fx-text-fill: rgb(51, 0, 170);
-    -fx-background-color: rgb(14, 177, 206);
-}
-
-.choice-box .menu-item>.label {
-    -fx-text-fill: white;
-}
-
-.choice-box .menu-item:focused>.label {
-    -fx-text-fill: white;
-}
-
-.date-picker {
-    -fx-background-color: transparent;
-    -fx-text-fill: black;
-}
-
-.date-picker:editable>.arrow-button>* {
+.date-picker .arrow-button .arrow {
     -fx-background-color: white;
 }
 
-.date-picker>.arrow-button {
+.date-picker .cell {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+.date-picker .cell:hover {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+.date-picker .cell:focused {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+.date-picker .selected {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+    -fx-text-fill: white;
+}
+
+.date-picker .selected:focused {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+    -fx-text-fill: white;
+}
+
+.date-picker-popup {
+    -fx-border-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+.date-picker-popup .month-year-pane {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+.date-picker-popup .month-year-pane .label {
+    -fx-text-fill: black;
+}
+
+.date-picker-popup .week-number-cell {
+    -fx-text-fill: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+.date-picker-popup .spinner .button .left-arrow,
+.date-picker-popup .spinner .button .right-arrow {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+.check-box {
+    -fx-text-fill: white;
+    -fx-accent: white;
     -fx-background-color: transparent;
+    -fx-background-insets: 0, 0 0 1 0;
+    -fx-background-radius: 0;
 }
 
-.toggle-button {
-    -fx-background-color: #c3c4c4,
-        linear-gradient(#d6d6d6 50%, white 100%),
-        radial-gradient(center 50% -40%, radius 200%, #e6e6e6 45%, rgba(230, 230, 230, 0) 50%);
-    -fx-background-radius: 30;
-    -fx-background-insets: 0, 1, 1;
-    -fx-text-fill: black;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 3, 0.0, 0, 1);
+.check-box .box {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+    -fx-border-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+    -fx-border-radius: 0;
+
 }
 
-.toggle-button:hover {
-    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
-        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-        linear-gradient(#dddddd 0%, #f6f6f6 50%);
-    -fx-background-radius: 8, 7, 6;
-    -fx-background-insets: 0, 1, 2;
-    -fx-text-fill: black;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
+.check-box .mark {
+    -fx-shape: "M1.73,12.91 8.1,19.28 22.79,4.59 22.79,1.59 8.1,16.28 1.73,9.91";
 }
 
-.toggle-button:armed {
-    -fx-background-color: grey;
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+
+.check-box:selected .box {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.514), rgba(155, 153, 153, 0.24));
+}
+
+
+.table-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+.table-button:hover {
+    -fx-background-color: transparent;
 }
 
 .table-view {
+    -fx-border-color: transparent;
     -fx-background-color: transparent;
-}
 
-.table-view .column-header-background .filler {
-    -fx-background-color: transparent;
-}
-
-.table-view .corner {
-    -fx-background-color: transparent;
-}
-
-.table-view .column-header-background {
-    -fx-background-color: linear-gradient(to bottom, #1dbbdd44, #93f9b944);
-    -fx-background-radius: 7px 7px 0px 0px;
-    -fx-background-insets: 0 11px 0 0;
-    -fx-padding: 0 0 5px 0;
-}
-
-.table-view .column-header {
-    -fx-background-color: transparent;
 }
 
 .table-view .table-cell {
     -fx-text-fill: white;
-    -fx-border-color: transparent;
-    -fx-padding: 2 0 2 10px;
 }
 
-.table-row-cell:hover {
-    -fx-background-color: #93f9b911;
-    -fx-text-background-color: white;
+.table-view .column-header-background,
+.table-view .column-header-background .filler,
+.table-view .corner {
+    -fx-background-color: transparent;
+}
+
+.table-view .column-header {
+    -fx-background-color: linear-gradient(to bottom, rgba(29, 28, 28, 0.24), rgba(155, 153, 153, 0.24));
+    -fx-border-color: transparent;
+}
+
+.table-view .column-header .label {
+    -fx-font-weight: bold;
+    -fx-alignment: center-left;
+}
+
+/* This is just magic */
+.table-row-cell:filled {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent -fx-lightest-grey-color -fx-lightest-grey-color -fx-lightest-grey-color, transparent;
+    -fx-border-insets: 0, 1;
 }
 
 .table-row-cell:odd {
-    -fx-background-color: #93f9b911;
+    -fx-text-fill: white;
+    -fx-background-color: #00000011;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
 }
 
 .table-row-cell:even {
-    -fx-background-color: #1dbbdd11;
+    -fx-text-fill: white;
+    -fx-background-color: #ffffff11;
     -fx-background-insets: 0, 0 0 1 0;
     -fx-padding: 0.0em;
+}
+
+.table-row-cell:empty {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+.table-row-cell:filled:hover {
+    -fx-background-color: -fx-light-grey-color;
+}
+
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #eaeaea;
+    -fx-background-insets: 0.0;
+    -fx-background-radius: 0.0;
+}
+
+.table-row-cell:filled:selected .table-cell {
+    -fx-text-fill: black;
+}
+
+.table-view .cell:filled {
+    -fx-cell-size: 30;
+    -fx-alignment: center-left;
 }
 
 .table-view .virtual-flow .scroll-bar:vertical,
@@ -188,58 +265,60 @@
     -fx-background-color: linear-gradient(to right, #1dbbdd44, #93f9b944);
 }
 
-#button-draw {
-    -fx-background-color: transparent;
-    -fx-border-color: black;
-    -fx-border-width: 2px;
+.check-box-table-cell>.check-box:selected .box .mark {
+    -fx-background-color: white;
 }
 
-#button-draw:hover {
-    -fx-background-repeat: no-repeat;
-    -fx-background-size: 500 500;
-    -fx-background-position: center center;
+.check-box-table-cell>.check-box:selected .box {
+    -fx-background-color: white;
+}
+
+.table-view .placeholder .label {
+    -fx-text-fill: white;
+    -fx-padding: 20px;
+}
+
+.tab-header-area .tab-header-background {
+    -fx-background-color: rgba(255, 255, 255, 0.178);
+}
+
+.tab-pane .tab:selected {
+    -fx-background-color: rgba(255, 255, 255, 0.267);
+    -fx-background-insets: 0 0 0 0;
+    -fx-background-radius: 0 0 0 0;
+}
+
+.tab .tab-label {
+    -fx-alignment: CENTER;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 0 10 0 10;
+}
+
+.tab-pane:top *.tab-header-area {
+    -fx-padding: 0 0 0 30;
+
+}
+
+.tab-pane {
+    -fx-background-color: transparent;
+    -fx-tab-min-width: 210px;
+    -fx-tab-min-height: 30px;
+    -fx-tab-max-height: 30px;
+}
+
+.tab-pane .tab {
+    -fx-background-color: transparent;
+    -fx-border-color: white;
+}
+
+.tab-pane:focused .tab-header-area .headers-region .tab:selected .focus-indicator {
+    -fx-border-width: 0;
+    -fx-border-insets: 0 0 0 0;
+    -fx-border-radius: 0;
 }
 
 .button {
-    -fx-background-color: #c3c4c4,
-        linear-gradient(#d6d6d6 50%, white 100%),
-        radial-gradient(center 50% -40%, radius 200%, #e6e6e6 45%, rgba(230, 230, 230, 0) 50%);
-    -fx-background-radius: 30;
-    -fx-background-insets: 0, 1, 1;
-    -fx-text-fill: black;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 3, 0.0, 0, 1);
-}
-
-.button:hover {
-    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
-        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-        linear-gradient(#dddddd 0%, #f6f6f6 50%);
-    -fx-background-radius: 8, 7, 6;
-    -fx-background-insets: 0, 1, 2;
-    -fx-text-fill: black;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
-}
-
-.button:pressed {
-    -fx-padding: 10 15 13 15;
-    -fx-background-insets: 2 0 0 0, 2 0 3 0, 2 0 4 0, 2 0 5 0;
-}
-
-.textfield {
-    -fx-background-color: linear-gradient(#f2f2f2, #d6d6d6),
-        linear-gradient(#fcfcfc 0%, #d9d9d9 20%, #d6d6d6 100%),
-        linear-gradient(#dddddd 0%, #f6f6f6 50%);
-    -fx-background-radius: 8, 7, 6;
-    -fx-background-insets: 0, 1, 2;
-    -fx-text-fill: black;
-    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.6), 5, 0.0, 0, 1);
-}
-
-.title-bar {
-    -fx-padding: 10px;
-    -fx-background-color: darkgreen;
-}
-
-.title-bar Label {
+    -fx-background-color: linear-gradient(to top, rgba(29, 28, 28, 0.8), rgba(155, 153, 153, 0.8));
     -fx-text-fill: white;
 }

@@ -4,8 +4,12 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +18,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ResourceBundle;
 
-
+@SuppressWarnings("all")
 public class MainController implements Initializable {
     @FXML
     ComboBox<String> cb, cb1, cb2, dpt, grd, mdl;
@@ -34,11 +38,29 @@ public class MainController implements Initializable {
     Button prsnt, absnt;
     @FXML
     Label lb, lb1;
+    @FXML
+    ImageView iv;
     private final AccessUtils accessUtils = new AccessUtils();
     private boolean editing = false;
 
+    /***
+     *
+     * Scene initialization <br>
+     * set Background image<br>
+     * connect to .accdb file<br>
+     * set keyboard shortcut for easy setting Present or Absent<br>
+     * fill combo-boxes with data from database
+     *
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        try {
+            FileInputStream input = new FileInputStream("src/main/resources/com/pointage/pointage/bg.jpg");
+            Image image = new Image(input);
+            iv = new ImageView(image);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
         pn.setOnKeyPressed(ke -> {
             switch (ke.getCode()) {
                 case P:
@@ -56,6 +78,14 @@ public class MainController implements Initializable {
 
     }
 
+    /***
+     *
+     * @param event
+     * <br>auto set Present or Absent from pressing `event` on button<br>
+     * add selected ENS to Present or Absent list if not 'selectioner tous'<br>
+     * if 'selectioner tous' all ENS will be added to Present or Absent list
+     *
+     */
     @FXML
     private void AddPoint(ActionEvent event) {
         Button src = (Button) event.getSource();
@@ -87,6 +117,10 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     *
+     *<br>check if ENS already in P/A TextFields if not exist add it
+     */
     private void check(TextArea tf, String value) {
         for (String line : tf.getText().split("\n")) {
             if (line.contains(value)) {
@@ -97,6 +131,9 @@ public class MainController implements Initializable {
         tf.setText(tf.getText().replaceAll("[\\\\\\r\\n]+", "\n"));
     }
 
+    /***
+     * Validate and insert the P/A lists to the database
+     */
     @FXML
     private void validate() {
         String values;
@@ -116,6 +153,9 @@ public class MainController implements Initializable {
         reset();
     }
 
+    /***
+     * Insert ENS information to database
+     */
     @FXML
     private void addEns() {
         try {
@@ -135,6 +175,9 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     * Delete selected ENS from database
+     */
     @FXML
     private void deleteEns() {
         String sql = "delete from ensignant where id = " + cb2.getValue().split("_")[0];
@@ -142,6 +185,9 @@ public class MainController implements Initializable {
         updateBoxes();
     }
 
+    /***
+     * Populate selected ENS information into correspending TextField
+     */
     @FXML
     private void editEns() {
         String[] n = cb2.getValue().split("_");
@@ -165,6 +211,9 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     * Search for ENS by searching matching letters pattern found in it's name
+     */
     @FXML
     private void search() {
         try {
@@ -183,6 +232,9 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     * Populate data to TableView from database based on ENS and DATE selection
+     */
     @FXML
     private void show() {
         boolean s = false, m = false;
@@ -214,6 +266,9 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     * set DatePicker to current date
+     */
     @FXML
     private void today() {
         if (!tod.isSelected()) return;
@@ -222,12 +277,18 @@ public class MainController implements Initializable {
         dt.setValue(LocalDate.parse(dtf.format(now)));
     }
 
+    /***
+     * clear P/A Lists
+     */
     @FXML
     private void reset() {
         t1.setText("");
         t2.setText("");
     }
 
+    /***
+     * clear ComboBoxes, TextFields,..., for new input
+     */
     @FXML
     private void reset1() {
         setText(grd, mdl);
@@ -237,6 +298,10 @@ public class MainController implements Initializable {
         updateBoxes();
     }
 
+    /***
+     *
+     * clear TextFields,ComboBoxes
+     */
     private void setText(ComboBox<String> grd, ComboBox<String> mdl) {
         nm.setText("");
         prnm.setText("");
@@ -249,12 +314,19 @@ public class MainController implements Initializable {
         mdl.setValue("");
     }
 
+    /***
+     * set auto inserting ENS to P or A list
+     */
     @FXML
     private void auto() {
         filter(t1, t2);
         filter(t2, t1);
     }
 
+    /***
+     *
+     * filter data on both P/A TextAreas and orgnize it
+     */
     private void filter(TextArea t2, TextArea t1) {
         if (t2.getText().isEmpty() && !t1.getText().isEmpty()) {
             for (String value : cb.getItems()) {
@@ -267,6 +339,9 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     * update data of ComboBoxs from database
+     */
     private void updateBoxes() {
         try {
             ResultSet rs = accessUtils.executeQuery("SELECT * FROM ensignant");
@@ -285,6 +360,12 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     *
+     * @param c ComboBox
+     * @param name table name
+     * <br>update other ComboBox `c` from table `name` from database
+     */
     private void updateOther(ComboBox<String> c, String name) {
         try {
             ResultSet rs = accessUtils.executeQuery("SELECT * FROM " + name);
@@ -297,6 +378,12 @@ public class MainController implements Initializable {
         }
     }
 
+    /***
+     *
+     * @param dp DatePicker with selected value
+     * @return days count of a month
+     *
+     */
     private String EndDay(DatePicker dp) {
         int m = Integer.parseInt(dp.getValue().toString().split("-")[1]);
         if (m == 2) return "28";
