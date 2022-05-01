@@ -1,0 +1,16 @@
+<component name="libraryTable">
+  <library name="healthmarketscience.jackcess" type="repository">
+    <properties maven-id="com.healthmarketscience.jackcess:jackcess:3.0.1" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/jackcess-3.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-lang3-3.8.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-logging-1.2.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/jackcess-3.0.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-lang3-3.8.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/commons-logging-1.2-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>
