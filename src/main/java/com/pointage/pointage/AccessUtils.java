@@ -12,10 +12,7 @@ import javafx.util.Callback;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,10 +28,11 @@ public class AccessUtils {
 
     public String connect() {
         try {
-            db = new DatabaseBuilder().open(new File("/home/devprod/IdeaProjects/pointage/src/main/resources/com/pointage/db/pointage.accdb"));
-            c = DriverManager.getConnection("jdbc:ucanaccess:///home/devprod/IdeaProjects/pointage/src/main/resources/com/pointage/db/pointage.accdb");
+            File file = new File("src/main/resources/com/pointage/db/pointage.accdb");
+            Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
+            c = DriverManager.getConnection("jdbc:ucanaccess://" + file.getAbsolutePath());
             return "Connected!";
-        } catch (SQLException | IOException e) {
+        } catch (SQLException | ClassNotFoundException e) {
             System.out.println(e.getCause());
             return "Not Connected!";
         }
@@ -43,17 +41,19 @@ public class AccessUtils {
     public ResultSet executeQuery(String SQL) {
         ResultSet rs = null;
         try {
-            rs = c.createStatement().executeQuery(SQL);
+            Statement st = c.createStatement();
+            PreparedStatement ps = c.prepareStatement(SQL);
+            if (SQL.toUpperCase().startsWith("SELECT")) rs = ps.executeQuery();
+            else ps.executeUpdate(); // ps.executeQuery();
             c.commit();
-            db.flush();
-            System.out.println("executed successfully :\n" + SQL);
-        } catch (SQLException | IOException e) {
-            System.out.println("execution failed :\n" + SQL + "\n" + e.getCause());
+            System.out.println("\nexecuted successfully : " + SQL.toUpperCase().split(" ")[0]);//+ "\n" + SQL);
+        } catch (SQLException e) {
+            System.out.println("\nexecution failed : \n SQL :" + SQL + "\nCause :" + e.getCause());
         }
         return rs;
     }
 
-    void populateData(TableView tv, String query) throws SQLException {
+    public void populateData(TableView tv, String query) throws SQLException {
         if (!tv.getColumns().isEmpty()) tv.getColumns().removeAll(tv.getColumns());
         ResultSet resultSet = executeQuery(query);
         ObservableList<ObservableList<String>> data = FXCollections.observableArrayList();

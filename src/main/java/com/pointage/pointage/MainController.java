@@ -1,5 +1,6 @@
 package com.pointage.pointage;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,8 +9,10 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -40,7 +43,7 @@ public class MainController implements Initializable {
     Label lb, lb1;
     @FXML
     ImageView iv;
-    private final AccessUtils accessUtils = new AccessUtils();
+    private AccessUtils accessUtils;
     private boolean editing = false;
 
     /***
@@ -55,27 +58,34 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         try {
-            FileInputStream input = new FileInputStream("src/main/resources/com/pointage/pointage/bg.jpg");
-            Image image = new Image(input);
-            iv = new ImageView(image);
+            File file = new File("src/main/resources/com/pointage/pointage/bg.jpg");
+            System.out.println(file.getAbsolutePath().replaceAll("/", "//"));
+            InputStream stream = new FileInputStream(file.getAbsolutePath().replaceAll("/", "//"));
+            System.out.println(stream);
+            Image image = new Image(stream);
+            System.out.println(image.getHeight());
+            iv = new ImageView();
+            iv.setImage(image);
+            iv.setPreserveRatio(false);
+            System.out.println(iv.getImage().getUrl());
+            //  Platform.exit();
+            pn.setOnKeyPressed(ke -> {
+                switch (ke.getCode()) {
+                    case P:
+                        prsnt.fire();
+                        break;
+                    case A:
+                        absnt.fire();
+                }
+            });
+            accessUtils = new AccessUtils();
+            updateBoxes();
+            updateOther(dpt, "dpt");
+            updateOther(grd, "grade");
+            updateOther(mdl, "module");
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
-        pn.setOnKeyPressed(ke -> {
-            switch (ke.getCode()) {
-                case P:
-                    prsnt.fire();
-                    break;
-                case A:
-                    absnt.fire();
-            }
-        });
-        System.out.println(accessUtils.connect());
-        updateBoxes();
-        updateOther(dpt, "dpt");
-        updateOther(grd, "grade");
-        updateOther(mdl, "module");
-
     }
 
     /***
@@ -112,8 +122,6 @@ public class MainController implements Initializable {
                 check(t1, cb.getValue());
                 if (!t2.getText().contains(cb.getValue())) t2.appendText(cb.getValue() + "\n");
                 break;
-
-
         }
     }
 
